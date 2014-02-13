@@ -11,7 +11,24 @@
 |
 */
 
+/*
 Route::get('/', function()
 {
+    $anvil = new uc\AnvilHeavy;
+    print_r($anvil);
+    echo $anvil->drop();
+    
 	return View::make('hello');
 });
+*/
+
+
+/**
+ * This context root is the base path for all apps components.  It should be 
+ * added to all routes/URLs.
+ */
+define('ROUTES_UC_CONTEXT_ROOT', '/uc');
+
+Route::controller(ROUTES_UC_CONTEXT_ROOT . "", 'uc\Controllers\PrimaryController');
+
+
