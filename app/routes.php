@@ -27,8 +27,11 @@ Route::get('/', function()
  * This context root is the base path for all apps components.  It should be 
  * added to all routes/URLs.
  */
-define('ROUTES_UC_CONTEXT_ROOT', '/uc');
-
-Route::controller(ROUTES_UC_CONTEXT_ROOT . "", 'uc\Controllers\PrimaryController');
 
 
+define('ROUTES_UC_CONTEXT_ROOT', '/');
+
+//Route::controller(ROUTES_UC_CONTEXT_ROOT . "", 'PrimaryController');
+Route::resource(ROUTES_UC_CONTEXT_ROOT . "user", 'UserController');
+
+Route::controller("", "PrimaryController");

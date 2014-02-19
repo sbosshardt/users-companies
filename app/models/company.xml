@@ -1,0 +1,20 @@
+<!-- URL: http://phprestsql.sourceforge.net/tutorial/company.xml
+HTTP/1.x 200 OK
+Date: Tue, 18 Feb 2014 18:08:26 GMT 
+Via: 1.1 varnish, 1.0 tlk-wcf01.medicalert.org (http_scan_byf/3.1.12.1) 
+Server: Apache/2.2.15 (CentOS) 
+Age: 0 
+Vary: Host 
+X-Cache: MISS from tlk-wcf01.medicalert.org 
+X-Varnish: 1329727073 
+Cache-Control: max-age=172800 
+Content-Type: text/xml 
+Content-Length: 269 
+Expires: Thu, 20 Feb 2014 18:08:26 GMT 
+-->
+<?xml version="1.0" encoding="UTF-8"?>
+<table xmlns:xlink="http://www.w3.org/1999/xlink">
+    <row xlink:href="/tutorial/company/1.xml">1</row>
+    <row xlink:href="/tutorial/company/9.xml">9</row>
+    <row xlink:href="/tutorial/company/2147483647.xml">2147483647</row>
+</table>

@@ -1,0 +1,21 @@
+<!-- URL: http://phprestsql.sourceforge.net/tutorial/company/1.xml
+HTTP/1.x 200 OK
+Date: Tue, 18 Feb 2014 18:33:46 GMT 
+Via: 1.1 varnish, 1.0 tlk-wcf01.medicalert.org (http_scan_byf/3.1.12.1) 
+Server: Apache/2.2.15 (CentOS) 
+Age: 0 
+Vary: Host 
+X-Cache: MISS from tlk-wcf01.medicalert.org 
+X-Varnish: 849504242 
+Cache-Control: max-age=172800 
+Connection: keep-alive 
+Content-Type: text/xml 
+Content-Length: 172 
+Expires: Thu, 20 Feb 2014 18:33:46 GMT 
+-->
+<?xml version="1.0" encoding="UTF-8"?>
+<row xmlns:xlink="http://www.w3.org/1999/xlink">
+    <uid>1</uid>
+    <name>CompanyCo</name>
+    <location>123 Sesame Street</location>
+</row>

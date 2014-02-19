@@ -1,0 +1,22 @@
+<!-- // URL: http://phprestsql.sourceforge.net/tutorial/user/2147483647.xml
+HTTP/1.x 200 OK
+Date: Tue, 18 Feb 2014 18:23:33 GMT 
+Via: 1.1 varnish, 1.0 tlk-wcf01.medicalert.org (http_scan_byf/3.1.12.1) 
+Server: Apache/2.2.15 (CentOS) 
+Age: 0 
+Vary: Host 
+X-Cache: MISS from tlk-wcf01.medicalert.org 
+X-Varnish: 1639451037 
+Cache-Control: max-age=172800 
+Connection: keep-alive 
+Content-Type: text/xml 
+Content-Length: 272 
+-->
+<?xml version="1.0" encoding="UTF-8"?>
+<row xmlns:xlink="http://www.w3.org/1999/xlink">
+    <uid>2147483647</uid>
+    <firstname>Jim</firstname>
+    <surname>Example</surname>
+    <email>jim@example.org</email>
+    <company_uid xlink:href="/tutorial/company/1.xml">1</company_uid>
+</row>
