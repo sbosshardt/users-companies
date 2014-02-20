@@ -12,6 +12,7 @@ class UserPresenter extends BasePresenter
     public function present() {
         // do nothing
         $this->dataOut = &$this->dataIn;
+        
         return $this->dataOut;
     }
     

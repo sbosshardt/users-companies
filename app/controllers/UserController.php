@@ -23,9 +23,25 @@ class UserController extends SimpleController
      */
     private $service;
     
+    /**
+     *
+     * @var if there is a supplied user id
+     */
+    private $uid;
+    
+    /**
+     *
+     * @var name of resource (e.g. index, create, store, show, edit, update, destroy)
+     */
+    private $resourceName;
+    
     public function preProcess() {
+        $this->service = new UserService();
         // if our URL ends with /user, then the default mode of userIndex is good
         // if it doesn't, we set mode to user (as in, viewing/editing a particular user)
+        
+        // we probably don't need this anymore, since switching to resource controller..
+        /*
         $URIPieces = explode("/", $_SERVER['REQUEST_URI']);
         if ($URIPieces[sizeof($URIPieces)-1] !== "user")
         {
@@ -34,20 +50,33 @@ class UserController extends SimpleController
         else
         {
             $this->controllerData['uid'] = NULL;
-        }
+        }*/
     }
     
     public function processModel() {
-        $this->service = new UserService();
+        /*
         $this->service->setParams(
                 array( 'uid' => $this->controllerData['uid'], )
                 );
+         */
+        $this->service->setParams( array('uid' => $this->uid, ) );
+        $this->service->setMode($this->resourceName);
+        
         // not sure why we are executing this conditional
+        /*
         if (!empty($this->controllerData['uid']))
         {
             $this->service->setMode("user");
             $this->modelData = $this->service->process();
         }
+         */
+        /*
+        if (!empty($this->uid))
+        {
+            $this->service->setMode("user");
+            //$this->modelData = $this->service->process();
+        }
+         */
     }
     
     public function processPresenter() {
@@ -56,29 +85,63 @@ class UserController extends SimpleController
         $presenter = new UserPresenter();
         
         // process the service, get the "formattedResponse"
-        $response = $this->service->process();
+        if ($this->resourceName !== "create")
+        {
+            $response = $this->service->process();
+        }
+        
+        $response['currentResourceName'] = $this->resourceName;
+        switch ($this->resourceName)
+        {
+            case "edit":
+                $response['routeNameForForm'] = "update";
+                break;
+            case "create":
+                $response['routeNameForForm'] = "store";
+                break;
+            default:
+                $response['routeNameForForm'] = "UNKNOWN ROUTE NAME FOR FORM";
+                break;
+        }
+        $response['uid'] = @$this->uid;
         
         $presenter->setData($response);
         $this->presenterData = $presenter->present();
     }
     
-    /*
-    public function processPresenter() {
-        
-    }
-    */
     
     public function processView() {
         
         $view = NULL;
-        
-        if ($this->service->getMode() == "userIndex")
+        // index, create, store, show, edit, update, destroy
+        switch ($this->resourceName)
         {
-            $view = View::make('userIndex')->with('response', $this->presenterData);
-        }
-        else
-        {
-            $view = View::make('user')->with('stuff', array( 'uid' => $this->controllerData['uid'] , 'response' => $this->presenterData ) );
+            case "index":
+                $view = View::make('userIndex')->with('response', $this->presenterData);
+                break;
+            case "create":
+                $view = View::make('userform')->with('response', $this->presenterData);
+                break;
+            case "store":
+                //$view = View::make('userIndex')->with('response', $this->presenterData);
+                $view = $this->show(Input::get('uid'));
+                break;
+            case "show":
+                $view = View::make('user')->with('response', $this->presenterData);
+                break;
+            case "edit":
+                $view = View::make('userform')->with('response', $this->presenterData);
+                break;
+            case "update":
+                $view = $this->show($this->uid);
+                //$view = View::make('user')->with('response', $this->presenterData);
+                break;
+            case "destroy":
+                $view = View::make('userIndex')->with('response', $this->presenterData);
+                break;
+            default:
+                echo "ERROR: UNKNOWN RESOURCE NAME '{$this->resourceName}'";
+                break;
         }
         
         return $view;
@@ -90,8 +153,9 @@ class UserController extends SimpleController
      */
     public function index()
     {
-        $this->controllerData['mode'] = "index";
+        $this->resourceName = "index";
         $view = $this->process();
+        //var_dump($view);
         return $view;
     }
     
@@ -101,7 +165,9 @@ class UserController extends SimpleController
     public function create()
     {
         // TODO: Implement form to create new user records
-        $this->controllerData['mode'] = "create";
+        $this->resourceName = "create";
+        $view = $this->process();
+        return $view;
     }
     
     /**
@@ -110,7 +176,9 @@ class UserController extends SimpleController
     public function store()
     {
         // TODO: Implement creating new user records
-        $this->controllerData['mode'] = "store";
+        $this->resourceName = "store";
+        $view = $this->process();
+        return $view;
     }
     
     /**
@@ -119,7 +187,8 @@ class UserController extends SimpleController
     public function show($uid)
     {       
         // Show the record for the given uid
-        $this->controllerData['mode'] = "show";
+        $this->resourceName = "show";
+        $this->uid = $uid;
         $view = $this->process();
         return $view;
     }
@@ -130,7 +199,10 @@ class UserController extends SimpleController
     public function edit($uid)
     {
         // TODO: Implement form to edit user's records
-        $this->controllerData['mode'] = "edit";
+        $this->resourceName = "edit";
+        $this->uid = $uid;
+        $view = $this->process();
+        return $view;
     }
     
     /**
@@ -139,7 +211,10 @@ class UserController extends SimpleController
     public function update($uid)
     {
         // TODO: Process editing form to update user's records
-        $this->controllerData['mode'] = "update";
+        $this->resourceName = "update";
+        $this->uid = $uid;
+        $view = $this->process();
+        return $view;
     }
     
     /**
@@ -148,6 +223,9 @@ class UserController extends SimpleController
     public function destroy($uid)
     {
         // TODO: Implement deleting a user's record
-        $this->controllerData['mode'] = "destroy";
+        $this->resourceName = "destroy";
+        $this->uid = $uid;
+        $view = $this->process();
+        return $view;
     }
 }

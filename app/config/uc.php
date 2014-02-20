@@ -35,23 +35,23 @@ return array(
   /**
    * Configuration variables for users-companies service.
    */
-  'userIndex' => array(
+  'user-index' => array(
+    /**
+     * Service path to retrieve list of user uids.
+     */
+    'path' => '/tutorial/user.xml',
+  ),
+  'user-uid' => array(
     /**
      * Service path to retrieve user information from uid.
      */
-    'path' => '/tutorial/user.xml',
+    'path' => '/tutorial/user/%s.xml',
   ),
   'companyIndex' => array(
     /**
      * Service path to retrieve user information from uid.
      */
     'path' => '/tutorial/company.xml',
-  ),
-  'user' => array(
-    /**
-     * Service path to retrieve user information from uid.
-     */
-    'path' => '/tutorial/user/%s.xml',
   ),
   'company' => array(
     /**

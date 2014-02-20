@@ -8,24 +8,6 @@
 
 class UserService extends Service {
     
-    /**
-     * Set to userIndex if we are listing all users' uids
-     * Set to user if listing a particular user's details
-     * @var mode
-     */
-    protected $mode = "userIndex";
-    
-    
-    public function setMode($mode)
-    {
-        $this->mode = $mode;
-    }
-    
-    public function getMode()
-    {
-        return $this->mode;
-    }
-    
     private static $ATTRIBUTE_MAP = array(
         'uid',
     );
@@ -49,15 +31,68 @@ class UserService extends Service {
      *  CURL parameters needed to run the user request.
      */
     protected function getCustomCurlParams() {
-        $urlSuffix = Config::get('uc.userIndex.path');
-        if ($this->mode == "user") // as opposed to userIndex
+        $HTTPMethod = "GET";
+        
+        switch ($this->mode)
         {
-            $urlSuffix = sprintf(Config::get('uc.user.path'), $this->params['uid']);
+            case "index":
+            case "store":
+                $urlSuffix = Config::get('uc.user-index.path');
+                break;
+            case "edit":
+            case "show":
+            case "update":
+            case "destroy":
+                $urlSuffix = sprintf(Config::get('uc.user-uid.path'), $this->params['uid']);
+                break;
+            case "create":
+                "ERROR: getCustomCurlParams should not be called while service is in 'create' mode.  ";
+            default:
+                echo "ERROR: mode is set to an unknown or invalid value in UserService.";
+                die();
+                break;
+        }
+        
+        if ($this->mode == "store")
+        {
+            $HTTPMethod = "POST";
+        }
+        else if ($this->mode == "update")
+        {
+            $HTTPMethod = "PUT";
+        }
+        else if ($this->mode == "destroy")
+        {
+            $HTTPMethod = "DELETE";
         }
         
         $curlParams = array(
             CURLOPT_URL => sprintf('%s%s', Config::get('uc.global.baseProtoAndDomain'), $urlSuffix),
+            CURLOPT_CUSTOMREQUEST => $HTTPMethod,
+            //CURLOPT_HTTPHEADER => array("X-HTTP-Method-Override: $HTTPMethod"),
+            CURLOPT_HTTPHEADER => array("Content-Type: application/json"),
         );
+        
+        if ( ($this->mode == "store") || ($this->mode == "update") )
+        {
+            $DataToSubmit = Input::except('_method', '_token');
+            $POSTFields = http_build_query($DataToSubmit);
+            $TestPostFields = "";
+            foreach ($DataToSubmit as $Key => $Value)
+            {
+                $Key = urlencode($Key);
+                $Value = str_replace("%40", "@", $Value);
+                //$Value = urlencode($Value);
+                // don't use \r\n, just \n.
+                // this service does not seem to support post string with ampersands
+                $TestPostFields .= "$Key=$Value\n";
+            }
+            //$curlParams = $curlParams + array(CURLOPT_POST => count($DataToSubmit), CURLOPT_POSTFIELDS => $DataToSubmit);
+            //$curlParams = $curlParams + array(CURLOPT_POSTFIELDS => $POSTFields);
+            $curlParams = $curlParams + array(CURLOPT_POSTFIELDS => $TestPostFields);
+        }
+        
+        //var_dump($curlParams);
         
         return $curlParams;
     }
@@ -85,8 +120,6 @@ class UserService extends Service {
             return;
         }
         
-        //var_dump($dom);
-        
         $xpath = new DOMXPath($dom);
         $elements = $xpath->query("//row");
         $this->responseFormatted = array();
@@ -94,27 +127,31 @@ class UserService extends Service {
         {
             // determine if we are showing the listing of all the uids or we are
             // showing a particular user's listing
-            if ($this->mode == "userIndex")
+            if ($this->mode == "index")
             {
+                $uidlist = array();
                 foreach ($elements as $element)
                 {
-                    array_push($this->responseFormatted,
+                    array_push($uidlist,
                             array( "uid" => $element->nodeValue) );
                 }
+                $this->responseFormatted["uidlist"] = $uidlist;
             }
-            else
+            else if ( ($this->mode == "show") || ($this->mode == "edit") )
             {
-                foreach ($elements as $element)
+                $element = $elements->item(0);
+                $nodes = $element->childNodes;
+                $userdata = array();
+                foreach ($nodes as $node)
                 {
-                    $nodes = $element->childNodes;
-                    $responseElement = array();
-                    foreach ($nodes as $node)
-                    {
-                        $responseElement[$node->nodeName] = $node->nodeValue;
-                    }
-                    array_push($this->responseFormatted, $responseElement);
+                    $userdata[$node->nodeName] = $node->nodeValue;
                 }
+                $this->responseFormatted['userdata'] = $userdata;
             }
+        }
+        else
+        {
+            echo "NOTICE: NO KNOWN XML ELEMENTS WERE RETURNED FROM THIS METHOD";
         }
     }
 }

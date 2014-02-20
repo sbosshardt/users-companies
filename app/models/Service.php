@@ -21,6 +21,26 @@ abstract class Service {
   );
   
   /**
+     * Set to userIndex if we are listing all users' uids
+     * Set to user if listing a particular user's details
+   * 
+   * name of resource (e.g. index, create, store, show, edit, update, destroy)
+   * 
+     * @var mode
+     */
+    protected $mode;
+    
+    public function setMode($mode)
+    {
+        $this->mode = $mode;
+    }
+    
+    public function getMode()
+    {
+        return $this->mode;
+    }
+  
+  /**
    * This is an array of default CURL params that can be overwritten in getCustomCurlParams().
    * 
    * @see Configuration for etrak.global.defaultCurlParams.

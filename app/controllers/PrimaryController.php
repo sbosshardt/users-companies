@@ -18,24 +18,7 @@ class PrimaryController extends \BaseController
         echo "Index!";
         return $view;
     }
-/*
-    public function getUser($parameters = array())
-    {
 
-    }
-    public function putUser($parameters = array())
-    {
-        
-    }
-    public function postUser($parameters = array())
-    {
-        
-    }
-    public function deleteUser($parameters = array())
-    {
-        
-    }
-*/   
     public function missingMethod($parameters = array())
     {
         $testFilename = "";
@@ -47,7 +30,8 @@ class PrimaryController extends \BaseController
             $testFilename .= $param;
         }
         //echo "Filename is $testFilename.  Path is: ";
-        $testFile = getcwd() . $testFilename;
+        $testFile = getcwd() . "/" . $testFilename;
+        echo "testFile is $testFile.  Path is: ";
         if (file_exists($testFile) === true)
         {
             return file_get_contents($testFile);

@@ -8,28 +8,39 @@
 
 
 @section('userlisting')
+    <?php
+    $userdata = $response['userdata'];
+    ?>
     <h1>User Details</h1>
     <table>
         <tbody>
             <tr>
                 <td>uid:</td>
-                <td>{{$stuff['response'][0]['uid']}}</td>
+                <td>{{$userdata['uid']}}</td>
             </tr>
             <tr>
                 <td>First Name:</td>
-                <td>{{$stuff['response'][0]['firstname']}}</td>
+                <td>{{$userdata['firstname']}}</td>
             </tr>
             <tr>
                 <td>Surname:</td>
-                <td>{{$stuff['response'][0]['surname']}}</td>
+                <td>{{$userdata['surname']}}</td>
             </tr>
             <tr>
                 <td>Email:</td>
-                <td>{{$stuff['response'][0]['email']}}</td>
+                <td>{{$userdata['email']}}</td>
             </tr>
             <tr>
                 <td>company_uid:</td>
-                <td>{{$stuff['response'][0]['company_uid']}}</td>
+                <td>{{$userdata['company_uid']}}</td>
+            </tr>
+            <tr>
+                {{--
+                    Not sure how to get Laravel hyperlinks to work
+                    Tried using URL::action('UserController@edit')
+                    http://laravel.com/docs/controllers
+                --}}
+                <td colspan='2'><a href='./{{$userdata['uid']}}/edit'>Edit Record</a></td>
             </tr>
         </tbody>
     </table>
@@ -37,9 +48,6 @@
 
 @section('body')
     <div>
-        <?php
-        //var_dump($stuff);
-        ?>
         @yield('userlisting')
     </div>
 @stop
