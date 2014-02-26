@@ -34,4 +34,4 @@ define('ROUTES_UC_CONTEXT_ROOT', '/');
 //Route::controller(ROUTES_UC_CONTEXT_ROOT . "", 'PrimaryController');
 Route::resource(ROUTES_UC_CONTEXT_ROOT . "user", 'UserController');
 
-Route::controller("", "PrimaryController");
+Route::controller(ROUTES_UC_CONTEXT_ROOT . "", "PrimaryController");

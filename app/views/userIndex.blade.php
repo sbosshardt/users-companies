@@ -11,7 +11,7 @@
     <h1>List of uids</h1>
     <p>[ <a href="user/create">Create a User</a> ]</p>
     @foreach ($response['uidlist'] as $resp)
-        <p><a href="user/{{$resp['uid']}}">{{$resp['uid']}}</a></p>
+        <p><a href="{{ URL::to('user/'.$resp['uid']) }}">{{$resp['uid']}}</a></p>
     @endforeach
 @stop
 

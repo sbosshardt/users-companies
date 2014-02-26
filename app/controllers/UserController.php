@@ -37,46 +37,12 @@ class UserController extends SimpleController
     
     public function preProcess() {
         $this->service = new UserService();
-        // if our URL ends with /user, then the default mode of userIndex is good
-        // if it doesn't, we set mode to user (as in, viewing/editing a particular user)
-        
-        // we probably don't need this anymore, since switching to resource controller..
-        /*
-        $URIPieces = explode("/", $_SERVER['REQUEST_URI']);
-        if ($URIPieces[sizeof($URIPieces)-1] !== "user")
-        {
-            $this->controllerData['uid'] = $URIPieces[sizeof($URIPieces)-1];  
-        }
-        else
-        {
-            $this->controllerData['uid'] = NULL;
-        }*/
     }
     
     public function processModel() {
-        /*
-        $this->service->setParams(
-                array( 'uid' => $this->controllerData['uid'], )
-                );
-         */
         $this->service->setParams( array('uid' => $this->uid, ) );
+        // e.g. is this: index, create, store, show, edit, update, destroy?
         $this->service->setMode($this->resourceName);
-        
-        // not sure why we are executing this conditional
-        /*
-        if (!empty($this->controllerData['uid']))
-        {
-            $this->service->setMode("user");
-            $this->modelData = $this->service->process();
-        }
-         */
-        /*
-        if (!empty($this->uid))
-        {
-            $this->service->setMode("user");
-            //$this->modelData = $this->service->process();
-        }
-         */
     }
     
     public function processPresenter() {
@@ -137,7 +103,8 @@ class UserController extends SimpleController
                 //$view = View::make('user')->with('response', $this->presenterData);
                 break;
             case "destroy":
-                $view = View::make('userIndex')->with('response', $this->presenterData);
+                //$view = View::make('userIndex')->with('response', $this->presenterData);
+                $view = $this->index();
                 break;
             default:
                 echo "ERROR: UNKNOWN RESOURCE NAME '{$this->resourceName}'";

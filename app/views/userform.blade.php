@@ -39,6 +39,21 @@ $FormArray = array('action' => $Action, 'method' => $method);
         {{ Form::submit( ucfirst($response['currentResourceName'])." User" ) }}
         
     {{ Form::close() }}
+    
+<?php
+// if this form is on the Edit User page, we need to make a second form to
+// provide functionality to delete users.
+if ($method == "put")
+{
+    $DelAction = array("UserController@destroy", $response['uid']);
+    $DeleteForm = array('action' => $DelAction, 'method' => 'delete');
+    echo '<br /><br />';
+    echo Form::open($DeleteForm);
+        echo Form::submit("Delete User");
+    echo Form::close();
+}
+?>
+    
 @stop
 
 @section('body')
